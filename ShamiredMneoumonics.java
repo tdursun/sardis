@@ -10,7 +10,7 @@ import java.util.List;
 public class ShamiredMneoumonics {
 
     static SecureRandom rnd = new SecureRandom();
-    private static final BigInteger PRIME = BigInteger.probablePrime(4096, rnd);
+    private static final BigInteger PRIME = BigInteger.probablePrime(1024, rnd);
     private static final Path BIP39_WORD_LIST = Path.of("bip39-english.txt");
     // Secret'tan daha büyük bir asal sayı
     // 24 kelimelik bir BIP39 mnemonic yaklaşık 150-250 byte olabilir.
