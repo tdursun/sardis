@@ -29,13 +29,32 @@ public class ShamiredMneoumonics {
         public String toString() {
             return x + ":" + y.toString(16);
         }
+
+        String toWords(List<String> words) {
+            BigInteger value = y;
+            BigInteger base = BigInteger.valueOf(words.size());
+            List<String> encoded = new ArrayList<>();
+
+            do {
+                BigInteger[] division = value.divideAndRemainder(base);
+                encoded.add(words.get(division[1].intValue()));
+                value = division[0];
+            } while (value.signum() > 0);
+
+            java.util.Collections.reverse(encoded);
+            return x + ":" + String.join(" ", encoded);
+        }
     }
 
-    private static String createRandomMnemonic() throws IOException {
+    private static List<String> loadBip39Words() throws IOException {
         List<String> words = Files.readAllLines(BIP39_WORD_LIST, StandardCharsets.UTF_8);
         if (words.size() != 2048) {
             throw new IOException("BIP39 kelime listesi eksik veya hatalı.");
         }
+        return words;
+    }
+
+    private static String createRandomMnemonic(List<String> words) {
 
         StringBuilder mnemonic = new StringBuilder();
 
@@ -114,12 +133,16 @@ public class ShamiredMneoumonics {
 
     public static void main(String[] args) throws IOException {
 
-        String mnemonic = createRandomMnemonic();
+        List<String> words = loadBip39Words();
+        String mnemonic = createRandomMnemonic(words);
 
         List<Share> shares = split(mnemonic);
 
         System.out.println("Mnemonic: " + mnemonic);
-        System.out.println("Shares: " + shares);
+        System.out.println("Shares (BIP39 words):");
+        for (Share share : shares) {
+            System.out.println(share.toWords(words));
+        }
 
         String restored = recover(
                 shares.get(0),
