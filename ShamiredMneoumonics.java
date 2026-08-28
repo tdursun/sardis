@@ -1,20 +1,17 @@
 import java.math.BigInteger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 public class ShamiredMneoumonics {
 
     static SecureRandom rnd = new SecureRandom();
     private static final BigInteger PRIME = BigInteger.probablePrime(4096, rnd);
-    private static final URI BIP39_WORD_LIST = URI.create(
-            "https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/english.txt");
+    private static final Path BIP39_WORD_LIST = Path.of("bip39-english.txt");
     // Secret'tan daha büyük bir asal sayı
     // 24 kelimelik bir BIP39 mnemonic yaklaşık 150-250 byte olabilir.
     //PRIME =  new BigInteger("208351617316091241234326746312124448251235562226470491514186331217050270460481");
@@ -34,16 +31,8 @@ public class ShamiredMneoumonics {
         }
     }
 
-    private static String createRandomMnemonic() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder(BIP39_WORD_LIST).GET().build();
-        HttpResponse<String> response = HttpClient.newHttpClient()
-                .send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-
-        if (response.statusCode() != 200) {
-            throw new IOException("BIP39 kelime listesi alınamadı: HTTP " + response.statusCode());
-        }
-
-        List<String> words = response.body().lines().toList();
+    private static String createRandomMnemonic() throws IOException {
+        List<String> words = Files.readAllLines(BIP39_WORD_LIST, StandardCharsets.UTF_8);
         if (words.size() != 2048) {
             throw new IOException("BIP39 kelime listesi eksik veya hatalı.");
         }
@@ -123,7 +112,7 @@ public class ShamiredMneoumonics {
         return new String(secretBytes, StandardCharsets.UTF_8);
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
 
         String mnemonic = createRandomMnemonic();
 
