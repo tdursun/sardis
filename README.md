@@ -1,15 +1,5 @@
-# sardis
-Sardis is a government friendly privacy preserving cryptocurrency developed by TUBITAK BILGEM Blockchain Research Lab
+# wallet tasks
+Build a wallet secret sharing module prototype
 
-This project includes Sardis wallet codes (in Java).
-
-		Sardis transaction generation
-			Zero Knowledge Proof generation codes (Range Proofs with commitments)
-			Homomorphic Encryption codes (EC El-Gamal)
-		Test codes
-			Proof verification codes
-    
-The smart contract code
-
-		Ethereum Smart CoOntract (Solidity)
-		Fabric Chaincode
+12 words-menuomoics is shared amoung three people via 2 of 3 Schamir Secret Sharing method
+Then, when required restore the same menomincs by using 2 shares
